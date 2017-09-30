@@ -20,6 +20,7 @@
 #include <time.h>
 #include <assert.h>
 #include <ostream>
+#include <sstream>
 #include <iostream>
 
 class LoggerHelper {
@@ -31,13 +32,13 @@ class LoggerHelper {
                         const char* func)
       : os_(os) {
     TimeBuffer buffer = {0};
-    os_ << "[" << format_time(buffer) << " " << const_basename(file) << " "
-        << func << ":" << line << "] ";
+    oss_ << "[" << format_time(buffer) << " " << const_basename(file) << " "
+         << func << ":" << line << "] ";
   }
 
-  ~LoggerHelper() { os_ << std::endl; }
+  ~LoggerHelper() { os_ << oss_.str() << std::endl; }
 
-  std::ostream& stream() { return os_; }
+  std::ostream& stream() { return oss_; }
 
  private:
   static const char* const_basename(const char* filename) {
@@ -66,6 +67,7 @@ class LoggerHelper {
     buffer[n] = '\0';
     return buffer;
   }
+  std::ostringstream oss_;
   std::ostream& os_;
 };
 
